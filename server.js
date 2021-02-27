@@ -21,7 +21,7 @@ http.createServer((req, res) =>{
     }
   })
 
-  fs.appendFile('log.txt', `Date: ${new Date()} \n URL: ${}`, (err,file) =>{
+  fs.appendFile('log.txt', `Date: ${new Date()} \n URL: ${req.url}`, (err,file) =>{
     if(err) throw err;
     console.log(`${file} Saved!`);
   })
