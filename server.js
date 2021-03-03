@@ -1,4 +1,4 @@
-let http = require('http'),
+const http = require('http'),
   url = require('url'),
   fs = require('fs');
 
@@ -9,13 +9,15 @@ http.createServer((req, res) =>{
   if(q.pathname.includes('documentation')){//set filePath to requested path in current directory
     filePath = `${__dirname}/documentation.html`;
   }else{// set filePath to home page
-    filePath = index.html;
+    filePath = 'index.html';
   }
 
 //Update the log.txt file using the 'f'ile 's'ystem module's appendFile method, with the request url.
-  fs.appendFile('log.txt', `Date: ${new Date()}:\n URL: ${req.url}\n\n`, (err,file) =>{
-    if(err) throw err;
-    console.log(`${file} Saved!`);
+  fs.appendFile('./log.txt', `Date: ${new Date()}:\n URL: ${req.url}\n\n`, (err) =>{
+    if(err){
+      throw err
+    };
+    console.log('Files Saved!');
   })
   
 // Read the contents of the form filePath and return/log the data
@@ -34,3 +36,6 @@ http.createServer((req, res) =>{
 
 
 console.log('My first Node test server is running on Port 8080.');
+
+
+
