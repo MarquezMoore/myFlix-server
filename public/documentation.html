@@ -9,10 +9,16 @@
     tr, 
     th, 
     td{
-      border: 1px solid black;
       border-collapse: collapse;
       padding: 1rem;
       text-align: left;
+    }
+    th {
+      background: gray;
+      color: white;
+    }
+    tr:nth-child(odd){
+      background: lightgray;
     }
   </style>
 </head>
@@ -24,12 +30,12 @@
 
 <table>
   <tr>
-      <th>Endpoint</th>
-      <th>HTTP Method</th>
-      <th>Request Format</th>
-      <th>Response Format</th>
-      <th>Use Case</th>
-    </tr>
+    <th>Endpoint</th>
+    <th>HTTP Method</th>
+    <th>Request Format</th>
+    <th>Response Format</th>
+    <th>Use Case</th>
+  </tr>
   <tr>
     <td>/api/movies</td>
     <td>GET</td>
