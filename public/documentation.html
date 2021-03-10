@@ -4,10 +4,132 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Documentation</title>
+  <style>
+    table, 
+    tr, 
+    th, 
+    td{
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 1rem;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
   <h1>myFlix</h1>
   <p>The objective of this server-side apllication of to provide users with information on their favorite movies. User are able to sign up and create an account, update their personal information and list of their favorite movies.</p>
+  
+   
 
+<table>
+  <tr>
+      <th>Endpoint</th>
+      <th>HTTP Method</th>
+      <th>Request Format</th>
+      <th>Response Format</th>
+      <th>Use Case</th>
+    </tr>
+  <tr>
+    <td>/api/movies</td>
+    <td>GET</td>
+    <td>None</td>
+    <td>JSON</td>
+    <td>Returns list on all movies.</td>
+  </tr>
+  <tr>
+    <td>/api/movies/[title]</td>
+    <td>GET</td>
+    <td>None</td>
+    <td>JSON</td>
+    <td>Returns all stored information on the specified movie (title as specification)</td>
+  </tr>
+  <tr>
+    <td>/api/movies/[title]/genre</td>
+    <td>GET</td>
+    <td>None</td>
+    <td>JSON</td>
+    <td>Return data about a genre (description) by name/title (e.g., “Thriller”)</td>
+  </tr>
+  <tr>
+    <td>/api/movies/[title]/director</td>
+    <td>GET</td>
+    <td>None</td>
+    <td>JSON</td>
+    <td>Return data about a director (bio, birth year, death year) by name</td>
+  </tr>
+  <tr>
+    <td>/api/users</td>
+    <td>POST</td>
+    <td>JSON <br />
+      <span>
+        {
+          'id': 'id',
+          'username': '[username]',
+          'password': '[password]'
+          'info': {
+            'firstName': '[firstName]',
+            'lastName': '[lastName]'
+          }
+        }
+      </span>
+    </td>
+    <td>Text relaying status</td>
+    <td>Allow all users to register</td>
+  </tr>
+  <tr>
+    <td>/api/users/[username]</td>
+    <td>PUT</td>
+    <td>None</td>
+    <td>Text relaying status</td>
+    <td>Allow user to update username</td>
+  </tr>
+  <tr>
+    <td>/api/movies</td>
+    <td>PUT</td>
+    <td>JSON <br />
+      <span>
+        {
+          'movies': {
+            'id': 'id',
+            'info': {
+              'name': 'name',
+              ...
+            }
+          }
+        }
+      </span>
+    </td>
+    <td>Tect relaying status</td>
+    <td>Allow users to add a movie to their list of favorites (showing only a text that a movie has been added—more on this later)</td>
+  </tr>
+  <tr>
+    <td>/api/movies</td>
+    <td>DELETE</td>
+    <td>JSON <br />
+      <span>
+        {
+          ...
+        }
+      </span>
+    </td>
+    <td>Text relaying status</td>
+    <td>Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed—more on this later)</td>
+  </tr>
+  <tr>
+    <td>/api/users</td>
+    <td>DELETE</td>
+    <td>JSON <br />
+      <span>
+        {
+          ...
+        }
+      </span>
+    </td>
+    <td></td>
+    <td>Allow existing users to deregister (showing only a text that a user email has been removed—more on this later)</td>
+  </tr>
+</table>
+  
 </body>
 </html>
