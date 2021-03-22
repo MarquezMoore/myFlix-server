@@ -70,13 +70,12 @@
     <td>JSON <br />
       <span>
         {
-          'id': 'id',
           'username': '[username]',
-          'password': '[password]'
-          'info': {
-            'firstName': '[firstName]',
-            'lastName': '[lastName]'
-          }
+          'password': '[password]',
+          'firstName': '[firstName]',
+          'lastName': '[lastName]'
+          'birdthday': [birthday],
+          'movies': [ <list of movies in array> ]
         }
       </span>
     </td>
@@ -96,12 +95,13 @@
     <td>JSON <br />
       <span>
         {
-          'movies': {
-            'id': 'id',
-            'info': {
-              'name': 'name',
-              ...
-            }
+          'title': [title],
+          'description': [description],
+          'director': {
+            'name': [name],
+            'bio': [bio],
+            'birdthday': [birthday],
+            'deathday': [deathday]
           }
         }
       </span>
@@ -115,7 +115,7 @@
     <td>JSON <br />
       <span>
         {
-          ...
+          'title': [title]
         }
       </span>
     </td>
@@ -128,7 +128,7 @@
     <td>JSON <br />
       <span>
         {
-          ...
+          'username': [username]
         }
       </span>
     </td>

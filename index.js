@@ -1,83 +1,90 @@
+/*
+  Reuirements
+  1. Return a list of ALL movies to the user - done
+  2. Return all data about a single movie by title to the user - done
+  3. Return data about a genre (description) by name/title (e.g., “Thriller”)
+  4. Return data about a director (bio, birth year, death year) by name
+  5. Allow new users to register
+  6. Allow users to update their user info (username, password, email, date of birth)
+  7. Allow users to add a movie to their list of favorites
+  8. Allow users to remove a movie from their list of favorites
+  9. Allow existing users to deregister
+*/
+
 const express = require('express'),
  morgan = require('morgan'),
  bodyParser = require('body-parser'),
- uuid = require('uuid');
+ uuid = require('uuid'),
+ mongoose = require('mongoose'),
+ models = require('./models.js');
   
 const app = express();
+const movies = models.movie;
+const users = models.user;
 
-// In-Memory Data 
-let movies = [
-  {
-    'title': 'Movie 1',
-    'discription': '...1',
-    'genre': 'Romance',
-    'director': 'John Doe',
-    'img': 'www.1.mov'
-  },
-  {
-    'title': 'Movie 2',
-    'discription': '... 2',
-    'genre': 'Comedy',
-    'director': 'Rick Smith',
-    'img': 'www.2.mov'
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
-  },
-  {
-    'title': 'Movie 3',
-    'discription': '... 3',
-    'genre': 'Action',
-    'director': 'Norman Way',
-    'img': 'www.3.mov'
-  },
-  {
-    'title': 'Movie 3',
-    'discription': '... 4',
-    'genre': 'Horror',
-    'director': 'Sandy Ross',
-    'img': 'www.4.mov'
-  },
-  {
-    'title': 'Movie 5',
-    'discription': '... 5',
-    'genre': 'Historic',
-    'director': 'Tysha Galloway',
-    'img': 'www.5.mov'
-  }
-];
-app.use(morgan(':method :host :url :status :res[content-length] - :response-time ms')); 
-app.use(bodyParser.json());
 
-app.use(express.static('public'));
+/*
+  To be used on each request
+*/
+app.use(morgan(':method :host :url :status :res[content-length] - :response-time ms')); // ??
+app.use(bodyParser.json()); // ?? 
+app.use(express.static('public'));// ??
 
-morgan.token('host', (req, res) =>{
+morgan.token('host', (req, res) =>{ // ??
   return req.hostname;
 })
 
-app.use((err, req, res, next)=>{
+app.use((err, req, res, next)=>{// ??
   console.error(err.stack);
   res.status(500).send('Something Broke');
   
 })
-// GET Request
-app.get('/api/movies', (req, res, next) =>{
-  res.send(movies);
+
+
+
+/*
+  Routes
+*/
+
+// GET Requests
+app.get('/api/movies', (req, res ) =>{
+  movies.find()
+    .then((movies) => {
+      res.status(200).json(movies);
+    })
+    .catch((err) => {
+      res.status(404).send(`Error: ${err}`);
+    })
 })
+
 app.get('/api/movies/:title', (req, res) =>{
   let title = req.params.title;
 
-  let reqMovie = movies.find((movie) => {
-    return movie.title === title;
-  })
-  if(reqMovie){
-    res.send(reqMovie);
-  }else{
-    res.status(404).send('Movie not Found');
-  }
+  movies.findOne({title: title})
+    .then((movie) => {
+      console.log(movie)
+      res.status(200).json(movie);
+    })
+    .catch((err) => {
+      res.status(404).send(`Error: ${err}`);
+    })
   
 })
-app.get('/api/movies/:title/genre', (req, res) =>{
-  res.send(`title has gerne of ...`);
+app.get('/api/genre/:genre', (req, res) =>{
+  let genre = req.params.genre;
+
+  movies.findOneç({'genre.name': genre})
+    .then((movie) => {
+      res.status(200).json(movie.genre.description);
+    })
+    .catch((err) => {
+      res.status(404).send(`Error: ${err}`);
+    })
 }) 
+
+
 app.get('/api/movies/:title/director', (req, res) =>{
   res.send('Director is being fetched');
 })
