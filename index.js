@@ -52,35 +52,44 @@ app.use((err, req, res, next)=>{// ??
 app.get('/api/movies', (req, res ) =>{
   movies.find()
     .then((movies) => {
+      if(!movies){
+        return res.status(404).send({'message': 'No movies not found...'});
+      }
       res.status(200).json(movies);
     })
     .catch((err) => {
-      res.status(404).send(`Error: ${err}`);
+      res.status(500).send(`Error: ${err}`);
     })
 })
 
 app.get('/api/movies/:title', (req, res) =>{
   let title = req.params.title;
 
-  movies.findOne({title: title})
+  movies.find({title: title})
     .then((movie) => {
-      console.log(movie)
+      if(movie === []){
+        return res.status(404).send({'message': 'Cannot find movie with this title...'})
+      }
       res.status(200).json(movie);
     })
     .catch((err) => {
-      res.status(404).send(`Error: ${err}`);
+      res.status(500).send(`Error: ${err}`);
     })
   
 })
+
 app.get('/api/genre/:genre', (req, res) =>{
   let genre = req.params.genre;
 
-  movies.findOneç({'genre.name': genre})
+  movies.find({'genre.name': genre})
     .then((movie) => {
+      if(!movie){
+        return res.status(404).send({'message': 'Cannot find genre with this name...'})
+      }
       res.status(200).json(movie.genre.description);
     })
     .catch((err) => {
-      res.status(404).send(`Error: ${err}`);
+      res.status(500).send(`Error: ${err}`);
     })
 }) 
 
