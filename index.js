@@ -53,7 +53,7 @@ app.get('/api/movies', (req, res ) =>{
   movies.find()
     .then((movies) => {
       if(!movies){
-        return res.status(404).send({'message': 'No movies not found...'});
+        return res.status(400).send({'message': 'No movies not found...'});
       }
       res.status(200).json(movies);
     })
@@ -68,7 +68,7 @@ app.get('/api/movies/:title', (req, res) =>{
   movies.findOne({title: title})
     .then((movie) => {
       if(!movie){
-        return res.status(404).send({'message': 'Cannot find movie with this title...'})
+        return res.status(400).send({'message': 'Cannot find movie with this title...'})
       }
       res.status(200).json(movie);
     })
@@ -84,7 +84,7 @@ app.get('/api/genre/:genre', (req, res) =>{
   movies.findOne({'genre.name': genre})
     .then((movie) => {
       if(!movie){
-        return res.status(404).send({'message': 'Cannot find genre with this name...'})
+        return res.status(400).send({'message': 'Cannot find genre with this name...'})
       }
       res.status(200).json(movie.genre.description);
     })
@@ -100,7 +100,7 @@ app.get('/api/movies/:title/director', (req, res) =>{
   movies.findOne({title: title})
     .then((movie) => {
       if(!movie){
-        return res.status(404).send({'message': 'Cannot find movie with this title... Please enter another.'})
+        return res.status(400).send({'message': 'Cannot find movie with this title... Please enter another.'})
       }
       res.status(200).json(movie.director);
       
@@ -152,7 +152,7 @@ app.put('/api/users/:username/:movieID', ( req, res ) =>{
     { new: true })
     .then( user => {
       if( !user ){
-        return res.status(400).send({'message': 'User not found...'})
+        return res.status(400).send({'message': 'Could not find user...'})
       }
       res.status(200).json(user)
     }).catch( err => {
@@ -162,7 +162,7 @@ app.put('/api/users/:username/:movieID', ( req, res ) =>{
 
 app.put('/api/users/:username', (req, res) =>{
   users.findOneAndUpdate(
-    {username: req.body.username},
+    {username: req.params.username},
     {$set: {
       username: req.body.username,
       password: req.body.password,
@@ -183,7 +183,7 @@ app.put('/api/users/:username', (req, res) =>{
 }) 
 
 // DELETE Request
-app.delete('/api/user/:username/:movieID', (req, res) =>{
+app.delete('/api/users/:username/:movieID', (req, res) =>{
   users.findOneAndUpdate(
     { username: req.params.username },
     {$pull: 
@@ -200,7 +200,7 @@ app.delete('/api/user/:username/:movieID', (req, res) =>{
     })
 }) 
 
-app.delete('/api/:username/remove', (req, res) =>{
+app.delete('/api/users/:username', (req, res) =>{
   users.findOneAndRemove({username: req.params.username})
     .then( user => {
       if( !user ) {
