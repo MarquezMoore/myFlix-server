@@ -58,22 +58,22 @@ app.get('/api/movies', (req, res ) =>{
       res.status(200).json(movies);
     })
     .catch((err) => {
-      res.status(500).send(`Error: ${err}`);
+      res.status(500).send(`Error: ${ err.stack }`);
     })
 })
 
 app.get('/api/movies/:title', (req, res) =>{
   let title = req.params.title;
 
-  movies.find({title: title})
+  movies.findOne({title: title})
     .then((movie) => {
-      if(movie === []){
+      if(!movie){
         return res.status(404).send({'message': 'Cannot find movie with this title...'})
       }
       res.status(200).json(movie);
     })
     .catch((err) => {
-      res.status(500).send(`Error: ${err}`);
+      res.status(500).send(`Error: ${ err.stack }`);
     })
   
 })
@@ -81,7 +81,7 @@ app.get('/api/movies/:title', (req, res) =>{
 app.get('/api/genre/:genre', (req, res) =>{
   let genre = req.params.genre;
 
-  movies.find({'genre.name': genre})
+  movies.findOne({'genre.name': genre})
     .then((movie) => {
       if(!movie){
         return res.status(404).send({'message': 'Cannot find genre with this name...'})
@@ -89,41 +89,133 @@ app.get('/api/genre/:genre', (req, res) =>{
       res.status(200).json(movie.genre.description);
     })
     .catch((err) => {
-      res.status(500).send(`Error: ${err}`);
+      res.status(500).send(`Error: ${ err.stack }`);
     })
 }) 
 
 
 app.get('/api/movies/:title/director', (req, res) =>{
-  res.send('Director is being fetched');
+  let title = req.params.title;
+
+  movies.findOne({title: title})
+    .then((movie) => {
+      if(!movie){
+        return res.status(404).send({'message': 'Cannot find movie with this title... Please enter another.'})
+      }
+      res.status(200).json(movie.director);
+      
+    })
+    .catch((err) => {
+      res.status(500).send(`Error: ${ err.stack }`)
+    })
+
 })
 
 // POST Requests
 app.post('/api/users',(req, res) =>{
- res.send('Registration Successful');
+  users.findOne({username: req.body.username})
+    .then((user) => {
+      if(user){
+        return res.status(400).json({'message':'This user already exists...'})
+      }else{
+        users
+          .create({
+            username: req.body.username,
+            password: req.body.password,
+            email: req.body.email,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            birthday: req.body.birthday,
+            movies: req.body.movies
+          })
+            .then(user => {
+              res.status(201).json(user);
+            })
+            .catch(err => {
+              res.status(400).send(`Error: ${ err.stack }`);
+            })
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(`Error: ${ err.stack }`)
+    })
 })
-app.post('/api/movies', (req, res) =>{
-  res.send('Movie has been added');
-}) 
+
 
 // PUT Request
-app.put('/api/movies', (req, res) =>{
-  res.send('Movie has been updated');
-}) 
+app.put('/api/users/:username/:movieID', ( req, res ) =>{ 
+  users.findOneAndUpdate(
+    { username: req.params.username },
+    {$addToSet: 
+      { movies: req.params.movieID }
+    }, 
+    { new: true })
+    .then( user => {
+      if( !user ){
+        return res.status(400).send({'message': 'User not found...'})
+      }
+      res.status(200).json(user)
+    }).catch( err => {
+      res.status(500).send(`Error: ${ err.stack }`)
+    })
+});
+
 app.put('/api/users/:username', (req, res) =>{
-  res.send('User has been updated');
+  users.findOneAndUpdate(
+    {username: req.body.username},
+    {$set: {
+      username: req.body.username,
+      password: req.body.password,
+      email: req.body.email,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      birthday: req.body.birthday,
+    }}, 
+    {new: true})
+    .then( user => {
+      if( !user ){
+        return res.status(400).send({'message': 'Could not find user...'})
+      }
+      res.status(200).json(user)
+    }).catch( err => {
+      res.status(500).send(`Error: ${ err.stack }`)
+    })
 }) 
 
 // DELETE Request
-app.delete('/api/movies', (req, res) =>{
-  res.send('Movie has been removed');
+app.delete('/api/user/:username/:movieID', (req, res) =>{
+  users.findOneAndUpdate(
+    { username: req.params.username },
+    {$pull: 
+      { movies: req.params.movieID }
+    }, 
+    { new: true })
+    .then( user => {
+      if( !user ){
+        return res.status(400).send({'message': 'User not found...'})
+      }
+      res.status(200).json(user)
+    }).catch( err => {
+      res.status(500).send(`Error: ${ err.stack }`)
+    })
 }) 
-app.delete('/api/users', (req, res) =>{
-  res.send('User has been removed');
+
+app.delete('/api/:username/remove', (req, res) =>{
+  users.findOneAndRemove({username: req.params.username})
+    .then( user => {
+      if( !user ) {
+        return res.status(400).send({'message': 'User not found...'})
+      }
+    
+      res.status(200).send(`${ req.params.username } was successfully deleted!`)
+    }).catch( err => {
+      res.status(500).send(`Error: ${ err.stack }`)
+    })
 }) 
 
 
-app.listen(8080, () =>{
+app.listen(8080, () => {
   console.log('Listening on port 8080');
 })
+
 

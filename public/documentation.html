@@ -36,6 +36,10 @@
     <th>Response Format</th>
     <th>Use Case</th>
   </tr>
+ <!-- 
+    GET Request: 
+      - Returns JSON object of all movies in the db
+  -->
   <tr>
     <td>/api/movies</td>
     <td>GET</td>
@@ -43,6 +47,10 @@
     <td>JSON</td>
     <td>Returns list on all movies.</td>
   </tr>
+  <!-- 
+    GET Request: 
+      - Returns JSON object of all details helds on the requested movie
+  -->
   <tr>
     <td>/api/movies/[title]</td>
     <td>GET</td>
@@ -50,13 +58,21 @@
     <td>JSON</td>
     <td>Returns all stored information on the specified movie (title as specification)</td>
   </tr>
+  <!-- 
+    GET Request: 
+      - Returns JSON object of all data held on the specified genre 
+  -->
   <tr>
-    <td>/api/movies/[title]/genre</td>
+    <td>/api/genre/[genre]</td>
     <td>GET</td>
     <td>None</td>
     <td>JSON</td>
     <td>Return data about a genre (description) by name/title (e.g., “Thriller”)</td>
   </tr>
+  <!-- 
+    GET Request:
+      - Returns JSON object of all data held on director of the specified movie
+  -->
   <tr>
     <td>/api/movies/[title]/director</td>
     <td>GET</td>
@@ -64,75 +80,84 @@
     <td>JSON</td>
     <td>Return data about a director (bio, birth year, death year) by name</td>
   </tr>
+  <!-- 
+    POST Requet:
+      - Expects JSON object of user that should be created
+      - Returns JSON object of user that was created
+  -->
   <tr>
     <td>/api/users</td>
     <td>POST</td>
     <td>JSON <br />
       <span>
-        {
-          'username': '[username]',
-          'password': '[password]',
-          'firstName': '[firstName]',
-          'lastName': '[lastName]'
-          'birdthday': [birthday],
-          'movies': [ <list of movies in array> ]
+        {<br />
+          "username": "[username]",<br />
+          "password": "[password]",<br />
+          "email": "[email]"",<br />
+          "firstName": "[firstName]",<br />
+          "lastName": "[lastName]",<br />
+          "birdthday": "[birthday]",<br />"
+          "movies": "[]"<br />
         }
       </span>
     </td>
-    <td>Text relaying status</td>
+    <td>JSON</td>
     <td>Allow all users to register</td>
   </tr>
+  <!-- 
+    PUT Request
+      - Returns JSON object of the updated user
+  -->
+  <tr>
+    <td>/api/users/[username]/[movieID]</td>
+    <td>PUT</td>
+    <td>None</td>
+    <td>JSON</td>
+    <td>Allow user to update username</td>
+  </tr>
+  <!-- 
+    PUT Request
+      - Expects JSON object of all user attributes with updated information
+      - Return JSON object of all data held after update
+  -->
   <tr>
     <td>/api/users/[username]</td>
     <td>PUT</td>
-    <td>None</td>
-    <td>Text relaying status</td>
-    <td>Allow user to update username</td>
-  </tr>
-  <tr>
-    <td>/api/movies</td>
-    <td>PUT</td>
     <td>JSON <br />
       <span>
-        {
-          'title': [title],
-          'description': [description],
-          'director': {
-            'name': [name],
-            'bio': [bio],
-            'birdthday': [birthday],
-            'deathday': [deathday]
-          }
-        }
+        {<br />
+          "username": "[username]",<br />
+          "password": "[password]",<br />
+          "email": "[email]",<br />
+          "firstName": "[firstName]",<br />
+          "lastName": "[lastName]",<br />
+          "birthday": "[birthday]"<br />
+        }<br />
       </span>
     </td>
-    <td>Tect relaying status</td>
+    <td>JSON</td>
     <td>Allow users to add a movie to their list of favorites (showing only a text that a movie has been added—more on this later)</td>
   </tr>
+  <!-- 
+    DELTE Request
+      - Returns JSON object of the respective user
+  -->
   <tr>
-    <td>/api/movies</td>
+    <td>/api/user/[username]/[movieID]</td>
     <td>DELETE</td>
-    <td>JSON <br />
-      <span>
-        {
-          'title': [title]
-        }
-      </span>
-    </td>
-    <td>Text relaying status</td>
+    <td>None</td>
+    <td>JSON</td>
     <td>Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed—more on this later)</td>
   </tr>
+  <!-- 
+    DELTE Request
+      - Returns success message
+  -->
   <tr>
     <td>/api/users</td>
     <td>DELETE</td>
-    <td>JSON <br />
-      <span>
-        {
-          'username': [username]
-        }
-      </span>
-    </td>
-    <td></td>
+    <td>None</td>
+    <td>Status message</td>
     <td>Allow existing users to deregister (showing only a text that a user email has been removed—more on this later)</td>
   </tr>
 </table>

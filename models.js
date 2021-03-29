@@ -22,8 +22,8 @@ let usersSchema = mongoose.Schema({
   username: {type: String, required: true},
   password: {type: String, required: true},
   email: {type: String, require: true},
-  firstname: String,
-  lastname: String,
+  firstName: String,
+  lastName: String,
   birthday: String,
   movies: [String]
 })
