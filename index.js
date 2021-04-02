@@ -11,12 +11,20 @@
   9. Allow existing users to deregister
 */
 
+const dotenv = require('dotenv').config();
+
+
 const express = require('express'),
  morgan = require('morgan'),
  bodyParser = require('body-parser'),
  uuid = require('uuid'),
  mongoose = require('mongoose'),
- models = require('./models.js');
+ models = require('./models.js'),
+ passport = require('passport');
+
+require('./passport.js');
+
+
   
 const app = express();
 const movies = models.movie;
@@ -31,6 +39,8 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
 app.use(morgan(':method :host :url :status :res[content-length] - :response-time ms')); // ??
 app.use(bodyParser.json()); // ?? 
 app.use(express.static('public'));// ??
+
+let auth = require('./auth.js')(app);
 
 morgan.token('host', (req, res) =>{ // ??
   return req.hostname;
@@ -49,7 +59,7 @@ app.use((err, req, res, next)=>{// ??
 */
 
 // GET Requests
-app.get('/api/movies', (req, res ) =>{
+app.get('/api/movies', passport.authenticate('jwt', {session: false}), (req, res ) =>{
   movies.find()
     .then((movies) => {
       if(!movies){
@@ -62,7 +72,7 @@ app.get('/api/movies', (req, res ) =>{
     })
 })
 
-app.get('/api/movies/:title', (req, res) =>{
+app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (req, res) =>{
   let title = req.params.title;
 
   movies.findOne({title: title})
@@ -78,7 +88,7 @@ app.get('/api/movies/:title', (req, res) =>{
   
 })
 
-app.get('/api/genre/:genre', (req, res) =>{
+app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (req, res) =>{
   let genre = req.params.genre;
 
   movies.findOne({'genre.name': genre})
@@ -94,7 +104,7 @@ app.get('/api/genre/:genre', (req, res) =>{
 }) 
 
 
-app.get('/api/movies/:title/director', (req, res) =>{
+app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: false}), (req, res) =>{
   let title = req.params.title;
 
   movies.findOne({title: title})
@@ -112,7 +122,7 @@ app.get('/api/movies/:title/director', (req, res) =>{
 })
 
 // POST Requests
-app.post('/api/users',(req, res) =>{
+app.post('/api/users', (req, res) =>{
   users.findOne({username: req.body.username})
     .then((user) => {
       if(user){
@@ -126,7 +136,7 @@ app.post('/api/users',(req, res) =>{
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             birthday: req.body.birthday,
-            movies: req.body.movies
+            //movies: req.body.movies
           })
             .then(user => {
               res.status(201).json(user);
@@ -143,7 +153,7 @@ app.post('/api/users',(req, res) =>{
 
 
 // PUT Request
-app.put('/api/users/:username/:movieID', ( req, res ) =>{ 
+app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: false}), ( req, res ) =>{ 
   users.findOneAndUpdate(
     { username: req.params.username },
     {$addToSet: 
@@ -160,7 +170,7 @@ app.put('/api/users/:username/:movieID', ( req, res ) =>{
     })
 });
 
-app.put('/api/users/:username', (req, res) =>{
+app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndUpdate(
     {username: req.params.username},
     {$set: {
@@ -183,7 +193,7 @@ app.put('/api/users/:username', (req, res) =>{
 }) 
 
 // DELETE Request
-app.delete('/api/users/:username/:movieID', (req, res) =>{
+app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndUpdate(
     { username: req.params.username },
     {$pull: 
@@ -200,7 +210,7 @@ app.delete('/api/users/:username/:movieID', (req, res) =>{
     })
 }) 
 
-app.delete('/api/users/:username', (req, res) =>{
+app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndRemove({username: req.params.username})
     .then( user => {
       if( !user ) {
@@ -214,8 +224,8 @@ app.delete('/api/users/:username', (req, res) =>{
 }) 
 
 
-app.listen(8080, () => {
-  console.log('Listening on port 8080');
+app.listen(process.env.port, () => {
+  console.log(`Listening on port ${process.env.port}`);
 })
 
 
