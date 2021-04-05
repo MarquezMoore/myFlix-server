@@ -31,12 +31,12 @@ let usersSchema = mongoose.Schema({
 
 
 // Custom static method of the usersSchema
-userSchema.static.hasPassword = (password) => {// Static methods do not bind to the instance created through a class.
+usersSchema.static.hasPassword = (password) => {// Static methods do not bind to the instance created through a class.
   return bcrypt.hashSync(password, 10);
 }
 
 //Custom instance method of the usersSchema
-userSchema.methods.validatePassword = function(password) {
+usersSchema.methods.validatePassword = function(password) {
   return bcrypt.hashSync(password, this.password);
 } 
 
