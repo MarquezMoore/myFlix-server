@@ -73,6 +73,9 @@ app.use((err, req, res, next)=>{// ??
 */
 
 // GET Requests
+app.get('/', (req, res) => {
+  res.status(200).send('Welcome');
+})
 app.get('/api/movies', passport.authenticate('jwt', {session: false}), (req, res ) =>{
   movies.find()
     .then( movies => {
