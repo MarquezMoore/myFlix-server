@@ -20,8 +20,10 @@ const express = require('express'),
  uuid = require('uuid'),
  mongoose = require('mongoose'),
  models = require('./models.js'),
- passport = require('passport');
-
+ passport = require('passport'),
+ cors = require('cors'),
+ { check, validationResult } = require('express-validator');
+ 
 require('./passport.js');
 
 
@@ -39,6 +41,18 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
 app.use(morgan(':method :host :url :status :res[content-length] - :response-time ms')); // ??
 app.use(bodyParser.json()); // ?? 
 app.use(express.static('public'));// ??
+
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      let message = 'The CORS policy for this application doesn’t allow access from origin';
+      return callback(new Error(message), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 let auth = require('./auth.js')(app);
 
@@ -61,13 +75,13 @@ app.use((err, req, res, next)=>{// ??
 // GET Requests
 app.get('/api/movies', passport.authenticate('jwt', {session: false}), (req, res ) =>{
   movies.find()
-    .then((movies) => {
+    .then( movies => {
       if(!movies){
         return res.status(400).send({'message': 'No movies not found...'});
       }
       res.status(200).json(movies);
     })
-    .catch((err) => {
+    .catch( err => {
       res.status(500).send(`Error: ${ err.stack }`);
     })
 })
@@ -76,13 +90,13 @@ app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (r
   let title = req.params.title;
 
   movies.findOne({title: title})
-    .then((movie) => {
+    .then( movie => {
       if(!movie){
         return res.status(400).send({'message': 'Cannot find movie with this title...'})
       }
       res.status(200).json(movie);
     })
-    .catch((err) => {
+    .catch( err => {
       res.status(500).send(`Error: ${ err.stack }`);
     })
   
@@ -92,13 +106,13 @@ app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (re
   let genre = req.params.genre;
 
   movies.findOne({'genre.name': genre})
-    .then((movie) => {
+    .then( movie => {
       if(!movie){
         return res.status(400).send({'message': 'Cannot find genre with this name...'})
       }
       res.status(200).json(movie.genre.description);
     })
-    .catch((err) => {
+    .catch( err => {
       res.status(500).send(`Error: ${ err.stack }`);
     })
 }) 
@@ -108,45 +122,60 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
   let title = req.params.title;
 
   movies.findOne({title: title})
-    .then((movie) => {
+    .then( movie => {
       if(!movie){
         return res.status(400).send({'message': 'Cannot find movie with this title... Please enter another.'})
       }
       res.status(200).json(movie.director);
       
     })
-    .catch((err) => {
+    .catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
     })
 
 })
 
 // POST Requests
-app.post('/api/users', (req, res) =>{
+app.post('/api/users', 
+  [
+    check('username', 'Username ia required').isLength({min: 5}),
+    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+    check('password', 'Password is required').not().isEmpty(),
+    check('email', 'Email does not appear to be valid').isEmail()
+  ]
+  ,(req, res) =>{
+
+  let errors = validationReuslt(req),  
+    hashedPwd = users.hashPassword(req.body.password);
+
+  if( !errors.isEmpty() ) {
+    return res.status(422).json(` Error: ${errors.array()} `)
+  }
+
   users.findOne({username: req.body.username})
-    .then((user) => {
+    .then( user => {
       if(user){
         return res.status(400).json({'message':'This user already exists...'})
       }else{
         users
           .create({
             username: req.body.username,
-            password: req.body.password,
+            password: hashedPwd,
             email: req.body.email,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             birthday: req.body.birthday,
             //movies: req.body.movies
           })
-            .then(user => {
+            .then( user => {
               res.status(201).json(user);
             })
-            .catch(err => {
+            .catch( err => {
               res.status(400).send(`Error: ${ err.stack }`);
             })
       }
     })
-    .catch((err) => {
+    .catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
     })
 })
@@ -223,9 +252,9 @@ app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}
     })
 }) 
 
-
-app.listen(process.env.port, () => {
-  console.log(`Listening on port ${process.env.port}`);
-})
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0',() => {
+  console.log(`Listening on port: ${port}`);
+});
 
 

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'),
+  bcrypt = require('bcrypt');
 
 let moviesSchema = mongoose.Schema({
   title: {type: String, required: true},
@@ -27,6 +28,17 @@ let usersSchema = mongoose.Schema({
   birthday: String,
   movies: [String]
 })
+
+
+// Custom static method of the usersSchema
+userSchema.static.hasPassword = (password) => {// Static methods do not bind to the instance created through a class.
+  return bcrypt.hashSync(password, 10);
+}
+
+//Custom instance method of the usersSchema
+userSchema.methods.validatePassword = function(password) {
+  return bcrypt.hashSync(password, this.password);
+} 
 
 
 let movie = mongoose.model('movie', moviesSchema);
