@@ -43,16 +43,18 @@ app.use(bodyParser.json()); // ??
 app.use(express.static('public'));// ??
 
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){
-      let message = 'The CORS policy for this application doesn’t allow access from origin';
-      return callback(new Error(message), false);
-    }
-    return callback(null, true);
-  }
-}));
+app.use(cors(
+  // {
+  //   origin: (origin, callback) => {
+  //     if(!origin) return callback(null, true);
+  //     if(allowedOrigins.indexOf(origin) === -1){
+  //       let message = 'The CORS policy for this application doesn’t allow access from origin';
+  //       return callback(new Error(message), false);
+  //     }
+  //     return callback(null, true);
+  //   }
+  // }
+));
 
 let auth = require('./auth.js')(app);
 
@@ -257,7 +259,7 @@ app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}
 
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
-  console.log(`Listening on port: ${port}`);
+  console.log(`CORS enabled web server listening on port: ${port}`);
 });
 
 
