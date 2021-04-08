@@ -156,8 +156,8 @@ app.post('/api/users',
     console.log(errors.array());
 
   if( !errors.isEmpty() ) {
-    let errors = errors.array();
-    return res.status(422).json(` Error: ${ errors} `)
+    let results = errors.array();
+    return res.status(422).json(` Error: ${ results } `)
   }
 
   users.findOne({username: req.body.username})
