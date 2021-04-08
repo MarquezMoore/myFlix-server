@@ -151,8 +151,9 @@ app.post('/api/users',
   ,(req, res) =>{
 
   let errors = validationResult(req),  
-  console.log(errors);
     hashedPwd = users.hashPassword(req.body.password);
+
+    console.log(errors);
 
   if( !errors.isEmpty() ) {
     return res.status(422).json(` Error: ${errors.array()} `)
