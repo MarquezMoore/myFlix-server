@@ -176,7 +176,7 @@ app.post('/api/users',
               res.status(201).json(user);
             })
             .catch( err => {
-              res.status(400).send(`Error: ${ err.stack }`);
+              res.status(400).send(`Error: ${ err }`);
             })
       }
     })
