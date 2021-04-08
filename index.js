@@ -184,7 +184,6 @@ app.post('/api/users',
             //movies: req.body.movies
           })
             .then( user => {
-              next(user);
               res.status(201).json(userDetails(req));
             })
             .catch( err => {
