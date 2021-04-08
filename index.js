@@ -143,10 +143,10 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 // POST Requests
 app.post('/api/users', 
   [
-    check('username', 'Username ia required').isLength({min: 5}),
-    check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-    check('password', 'Password is required').not().isEmpty(),
-    check('email', 'Email does not appear to be valid').isEmail()
+    check('username', 'Username is must have 5 or more characters...').isLength({min: 5}),
+    check('username', 'Username contains non-alphanumeric characters - not allowed...').isAlphanumeric(),
+    check('password', 'Password is required...').not().isEmpty(),
+    check('email', 'Email does not appear to be valid...').isEmail()
   ]
   ,(req, res) =>{
 
