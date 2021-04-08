@@ -151,6 +151,7 @@ app.post('/api/users',
   ,(req, res) =>{
 
   let errors = validationResult(req),  
+  console.log(errors);
     hashedPwd = users.hashPassword(req.body.password);
 
   if( !errors.isEmpty() ) {
@@ -176,7 +177,7 @@ app.post('/api/users',
               res.status(201).json(user);
             })
             .catch( err => {
-              res.status(400).send(`Error: ${ err }`);
+              res.status(400).send(`Error: ${ err.stack }`);
             })
       }
     })
