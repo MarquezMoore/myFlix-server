@@ -68,7 +68,16 @@ app.use((err, req, res, next)=>{// ??
   
 })
 
-
+function userDetails(req) {
+  let user = {
+    username: req.body.username,
+    email: req.body.email,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    birthday: req.body.birthday
+  }
+  return user;
+}
 
 /*
   Routes
@@ -175,7 +184,8 @@ app.post('/api/users',
             //movies: req.body.movies
           })
             .then( user => {
-              res.status(201).json(user);
+              next(user);
+              res.status(201).json(userDetails(req));
             })
             .catch( err => {
               res.status(400).send(`Error: ${ err.stack }`);
