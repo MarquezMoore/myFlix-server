@@ -231,7 +231,7 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
       if( !user ){
         return res.status(400).send({'message': 'Could not find user...'})
       }
-      res.status(200).json(user)
+      res.status(200).json(userDetails(req))
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
     })
