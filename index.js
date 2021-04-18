@@ -87,7 +87,8 @@ function userDetails(req) {
 app.get('/', (req, res) => {
   res.status(200).send('Welcome');
 })
-app.get('/api/movies', passport.authenticate('jwt', {session: false}), (req, res ) =>{
+// passport.authenticate('jwt', {session: false}), This needs to go in the route below
+app.get('/api/movies', (req, res ) =>{
   movies.find()
     .then( movies => {
       if(!movies){
