@@ -92,7 +92,7 @@ app.get('/api/movies',  passport.authenticate('jwt', {session: false}) ,(req, re
   movies.find()
     .then( movies => {
       if(!movies){
-        return res.status(400).send({'message': 'No movies not found...'});
+        return res.status(400).send({'msg': 'No movies not found...'});
       }
       res.status(200).json(movies);
     })
@@ -107,7 +107,7 @@ app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (r
   movies.findOne({title: title})
     .then( movie => {
       if(!movie){
-        return res.status(400).send({'message': 'Cannot find movie with this title...'})
+        return res.status(400).send({'msg': 'Cannot find movie with this title...'})
       }
       res.status(200).json(movie);
     })
@@ -123,7 +123,7 @@ app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (re
   movies.findOne({'genre.name': genre})
     .then( movie => {
       if(!movie){
-        return res.status(400).send({'message': 'Cannot find genre with this name...'})
+        return res.status(400).send({'msg': 'Cannot find genre with this name...'})
       }
       res.status(200).json(movie.genre.description);
     })
@@ -139,7 +139,7 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
   movies.findOne({title: title})
     .then( movie => {
       if(!movie){
-        return res.status(400).send({'message': 'Cannot find movie with this title... Please enter another.'})
+        return res.status(400).send({'msg': 'Cannot find movie with this title... Please enter another.'})
       }
       res.status(200).json(movie.director);
       
@@ -167,7 +167,7 @@ app.post('/api/users',
     // console.log(errors.array());
 
   if( !errors.isEmpty() ) {
-    return res.status(422).json( {Error: errors.array()} )
+    return res.status(422).json(  errors.array() )
   }
 
   users.findOne({username: req.body.username})
