@@ -173,7 +173,7 @@ app.post('/api/users',
   users.findOne({username: req.body.username})
     .then( user => {
       if(user){
-        return res.status(400).json({'msg':'This user already exists...'})
+        return res.status(400).json([{'msg':'This user already exists...'}])
       }else{
         users
           .create({
