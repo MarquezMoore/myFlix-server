@@ -163,7 +163,7 @@ app.post('/api/users',
   let errors = validationResult(req),  
     hashedPwd = users.hashPassword(req.body.password);
 
-    console.log(errors.array());
+    // console.log(errors.array());
 
   if( !errors.isEmpty() ) {
     return res.status(422).json( {Error: errors.array()} )
@@ -182,7 +182,6 @@ app.post('/api/users',
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             birthday: req.body.birthday,
-            //movies: req.body.movies
           })
             .then( user => {
               res.status(201).json(userDetails(req));
