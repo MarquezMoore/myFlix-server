@@ -156,6 +156,7 @@ app.post('/api/users',
     check('username', 'Username is must have 5 or more characters...').isLength({min: 5}),
     check('username', 'Username contains non-alphanumeric characters - not allowed...').isAlphanumeric(),
     check('password', 'Password is required...').not().isEmpty(),
+    check('password', 'Password contains non-alphanumeric characters - no allowed...'),
     check('email', 'Email does not appear to be valid...').isEmail()
   ]
   ,(req, res) =>{
@@ -172,7 +173,7 @@ app.post('/api/users',
   users.findOne({username: req.body.username})
     .then( user => {
       if(user){
-        return res.status(400).json({'message':'This user already exists...'})
+        return res.status(400).json({'msg':'This user already exists...'})
       }else{
         users
           .create({
