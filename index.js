@@ -150,16 +150,16 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 
 })
 
-app.get('api/users/:user', passport.authenticate('jwt', {session: false}), (req, res) => {
-  users.findOne({username: req.params.user})
-  .then( user => {
-    if(!user) return res.status(400).send({'msg': 'Could not find user...'})
-    res.status(200).json(user);
-  })
-  .catch( err => {
-    res.status(500).send(`Error: ${ err.stack }`)
-  })
-})
+// app.get('api/users/:user', passport.authenticate('jwt', {session: false}), (req, res) => {
+//   users.findOne({username: req.params.user})
+//   .then( user => {
+//     if(!user) return res.status(400).send({'msg': 'Could not find user...'})
+//     res.status(200).json(user);
+//   })
+//   .catch( err => {
+//     res.status(500).send(`Error: ${ err.stack }`)
+//   })
+// })
 
 // POST Requests
 app.post('/api/users', 
@@ -196,6 +196,7 @@ app.post('/api/users',
             birthday: req.body.birthday,
           })
             .then( user => {
+              console.log(userDetails(req));
               res.status(201).json(userDetails(req));
             })
             .catch( err => {
