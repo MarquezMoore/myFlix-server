@@ -150,8 +150,10 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 
 })
 
-app.get('api/users/:user', passport.authenticate('jwt', {session: false}), (req, res) => {
-  users.findOne({username: req.params.user})
+app.get('api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) => {
+  let username = req.params.username
+
+  users.findOne({username: username})
   .then( user => {
     if(!user) return res.status(400).send({'msg': 'Could not find user...'})
     res.status(200).json(user);
