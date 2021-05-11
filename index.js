@@ -139,7 +139,7 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
   movies.findOne({title: title})
     .then( movie => {
       if(!movie){
-        return res.status(400).send({'msg': 'Cannot find movie with this title... Please enter another.'})
+        return res.status(400).send({'msg': 'Cannot find movie with this title...'})
       }
       res.status(200).json(movie.director);
       
@@ -148,6 +148,17 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
       res.status(500).send(`Error: ${ err.stack }`)
     })
 
+})
+
+app.get('api/user/:user', passport.authenticate('jwt', {session: false}), (req, res) => {
+  users.findOne({username: req.params.user})
+  .then( user => {
+    if(!user) return res.status(400).send({'msg': 'Could not find user...'})
+    res.status(200).json(user);
+  })
+  .catch( err => {
+    res.status(500).send(`Error: ${ err.stack }`)
+  })
 })
 
 // POST Requests
