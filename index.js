@@ -150,7 +150,7 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 
 })
 
-app.get('api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) => {
+app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) => {
   let username = req.params.username
 
   users.findOne({username: username})
