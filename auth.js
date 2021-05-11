@@ -29,7 +29,9 @@ const router = (router) => {
 
       req.login( user, { session: false }, err => {
         if( err ){
-          res.send(err)
+          res.json({
+            message: err
+          })
         }
         
         let token = generateJWT( user.toJSON() );

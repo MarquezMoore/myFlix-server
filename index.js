@@ -91,9 +91,7 @@ app.get('/', (req, res) => {
 app.get('/api/movies',  passport.authenticate('jwt', {session: false}) ,(req, res ) =>{
   movies.find()
     .then( movies => {
-      if(!movies){
-        return res.status(400).send({'msg': 'No movies not found...'});
-      }
+      if(!movies) return res.status(400).send({'msg': 'No movies not found...'});
       res.status(200).json(movies);
     })
     .catch( err => {
@@ -106,9 +104,7 @@ app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (r
 
   movies.findOne({title: title})
     .then( movie => {
-      if(!movie){
-        return res.status(400).send({'msg': 'Cannot find movie with this title...'})
-      }
+      if(!movie) return res.status(400).send({'msg': 'Cannot find movie with this title...'})
       res.status(200).json(movie);
     })
     .catch( err => {
@@ -122,9 +118,7 @@ app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (re
 
   movies.findOne({'genre.name': genre})
     .then( movie => {
-      if(!movie){
-        return res.status(400).send({'msg': 'Cannot find genre with this name...'})
-      }
+      if(!movie) return res.status(400).send({'msg': 'Cannot find genre with this name...'})
       res.status(200).json(movie.genre.description);
     })
     .catch( err => {
@@ -138,9 +132,7 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 
   movies.findOne({title: title})
     .then( movie => {
-      if(!movie){
-        return res.status(400).send({'msg': 'Cannot find movie with this title...'})
-      }
+      if(!movie) return res.status(400).send({'msg': 'Cannot find movie with this title...'})
       res.status(200).json(movie.director);
       
     })
@@ -153,7 +145,7 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) => {
   let username = req.params.username
 
-  users.findOne({username: username})
+  users.findOne({username: req.params.username})
   .then( user => {
     if(!user) return res.status(400).send({'msg': 'Could not find user...'})
     res.status(200).json(user);
@@ -179,9 +171,7 @@ app.post('/api/users',
 
     // console.log(errors.array());
 
-  if( !errors.isEmpty() ) {
-    return res.status(422).json(  errors.array() )
-  }
+  if( !errors.isEmpty() ) return res.status(422).json(  errors.array() )
 
   users.findOne({username: req.body.username})
     .then( user => {
@@ -221,9 +211,7 @@ app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: 
     }, 
     { new: true })
     .then( user => {
-      if( !user ){
-        return res.status(400).send({'message': 'Could not find user...'})
-      }
+      if( !user ) return res.status(400).send({'message': 'Could not find user...'})
       res.status(200).json(user)
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
@@ -243,9 +231,7 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
     }}, 
     {new: true})
     .then( user => {
-      if( !user ){
-        return res.status(400).send({'message': 'Could not find user...'})
-      }
+      if( !user ) return res.status(400).send({'message': 'Could not find user...'})
       res.status(200).json(userDetails(req))
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
@@ -261,9 +247,7 @@ app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {sessio
     }, 
     { new: true })
     .then( user => {
-      if( !user ){
-        return res.status(400).send({'message': 'User not found...'})
-      }
+      if( !user ) return res.status(400).send({'message': 'User not found...'})
       res.status(200).json(user)
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
@@ -273,9 +257,7 @@ app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {sessio
 app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndRemove({username: req.params.username})
     .then( user => {
-      if( !user ) {
-        return res.status(400).send({'message': 'User not found...'})
-      }
+      if( !user ) return res.status(400).send({'message': 'User not found...'})
     
       res.status(200).send(`${ req.params.username } was successfully deleted!`)
     }).catch( err => {
