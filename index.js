@@ -156,6 +156,7 @@ app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), 
 })
 
 // POST Requests
+// Endpoint for registrering users
 app.post('/api/users', 
   [
     check('username', 'Username is must have 5 or more characters...').isLength({min: 5}),
@@ -203,6 +204,7 @@ app.post('/api/users',
 
 
 // PUT Request
+// Add movie to user's favorites
 app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: false}), ( req, res ) =>{ 
   users.findOneAndUpdate(
     { username: req.params.username },

@@ -26,7 +26,7 @@ passport.use(new localStrategy(
         return done(null, false, 'Incorrect password...');
       }
       
-      console.log('Finished');
+      // console.log('Finished');
       return done(null, user);
     }).catch( err => {
       done(err, false, {'Error': err});
@@ -43,13 +43,17 @@ const opts = {
 passport.use(new JWTStrategy(opts, (jwtPayload, done) => {
   return users.findOne({
     _id: jwtPayload._id
-  }).then(user => {
+  })
+  .then(user => {
     if(!user){
       return done(null, false, {message: 'User does not exist'});
     }
 
     return done(null, user);
-  }).catch(err => {
-    done(err, false, {'Error': err});
+  })
+  .catch(err => {
+    // done(err, false, {'Error': err});
+    done(err, false, 'Problem here');
+    
   });
 }));
