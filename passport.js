@@ -52,8 +52,6 @@ passport.use(new JWTStrategy(opts, (jwtPayload, done) => {
     return done(null, user);
   })
   .catch(err => {
-    // done(err, false, {'Error': err});
-    done(err, false, 'Problem here');
-    
+    done(err, false, {'Error': err});
   });
 }));
