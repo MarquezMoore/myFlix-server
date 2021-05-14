@@ -88,6 +88,10 @@ app.get('/', (req, res) => {
   res.status(200).send('Welcome');
 })
 
+/*
+  - passport.authenticate(): a passport method that is used to define which passport authentication strategy will be used to authenticate the respective endpoint
+*/
+
 app.get('/api/movies',  passport.authenticate('jwt', {session: false}) ,(req, res ) =>{
   movies.find()
     .then( movies => {
@@ -214,7 +218,7 @@ app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: 
     { new: true })
     .then( user => {
       if( !user ) return res.status(400).send({'message': 'Could not find user...'})
-      res.status(200).json(user)
+      res.status(200).json(user.movies)
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
     })

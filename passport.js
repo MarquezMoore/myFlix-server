@@ -35,8 +35,15 @@ passport.use(new localStrategy(
 /*
   JSON Web Token Strategy: Aurthorization
 */
+
+// This options will be use in the subsequent JWTStrategy to define how the JWT will be extrated from the request or veritfied
+
+// See: http://www.passportjs.org/packages/passport-jwt/ for details
+
 const opts = {
+  // jwtFromRequest (Required): is a function that extract the jwt from the request with data type of string or null in not found. 
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  // token is a Privacy Enhanced Mail (Base-64) enhance string
   secretOrKey: process.env.TOKEN_SECRET
 }
 
