@@ -218,7 +218,7 @@ app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: 
     { new: true })
     .then( user => {
       if( !user ) return res.status(400).send({'message': 'Could not find user...'})
-      res.status(200).json(user.movies)
+      res.status(200).json(user)
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
     })
