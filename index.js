@@ -230,9 +230,9 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
     {$set: {
       username: req.body.username,
       email: req.body.email,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      birthday: req.body.birthday
+      firstName: req.body.firstName | null,
+      lastName: req.body.lastName | null,
+      birthday: req.body.birthday | null,
     }}, 
     {new: true})
     .then( user => {
