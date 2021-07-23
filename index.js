@@ -208,7 +208,7 @@ app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), 
  * 
  * @method registerUser
  * @param {string} endpoint - Endpoint to register new user.
- * @param {array} expressValidationOpts - Express-validation options for validation req data.
+ * @param {array} expressValidationOpts - Express-validation options for validating req data.
  * @param {func} reqHandler - Callback 
  * @return {object} - Returns object of newly registered user.
  */
@@ -343,12 +343,12 @@ app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {sessio
 app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndRemove({username: req.params.username})
     .then( user => {
-      if( !user ) return res.status(400).send({'message': 'User not found...'})
-      res.status(200).send(`${ req.params.username } was successfully deleted!`)
+      if( !user ) return res.status(400).send({'message': 'User not found...'});
+      res.status(200).send({'message': `${ req.params.username } was successfully deleted!`});
     }).catch( err => {
-      res.status(500).send(`Error: ${ err.stack }`)
-    })
-}) 
+      res.status(500).send(`Error: ${ err.stack }`);
+    });
+});
 
 const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
