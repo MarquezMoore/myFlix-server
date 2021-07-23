@@ -100,8 +100,8 @@ app.get('/', (req, res) => {
 
 /**
  * 
- * @param {string} Endpoint- Endpoint to fetch all movies.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to fetch all movies.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback queries database for all movies.
  * @returns {object} - Returns object of all movies in database.
  */
@@ -119,8 +119,8 @@ app.get('/api/movies',  passport.authenticate('jwt', {session: false}) ,(req, re
 /**
  * 
  * @method getMovieDetails
- * @param {string} Endpoint- Endpoint to fetch movie details.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to fetch movie details.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback to query database for the requested movie.
  * @returns {object} - Returns object of requested movie.
  */
@@ -141,8 +141,8 @@ app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (r
 /**
  * 
  * @method getGenreDetails
- * @param {string} Endpoint- Endpoint to fetch genre description.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to fetch genre description.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback to query database for genre description.
  * @returns {object} - Returns object of the genre description of the specified movie.
  */
@@ -162,8 +162,8 @@ app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (re
 /**
  * 
  * @method getDirectorDetails
- * @param {string} Endpoint- Endpoint to fetch details director.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to fetch details director.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback that queries database for director details.
  * @returns {object} - Returns object of director details.
  */
@@ -184,8 +184,8 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 /**
  * 
  * @method getUser
- * @param {string} Endpoint- Endpoint to fetch user details.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to fetch user details.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback that locates specified user and returns that user's details.
  * @returns {object} - Returns object of requested user.
  */
@@ -207,8 +207,8 @@ app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), 
 /**
  * 
  * @method registerUser
- * @param {string} Endpoint- Endpoint to register new user.
- * @param {array} Validation - Express-validation options for validation req data.
+ * @param {string} endpoint - Endpoint to register new user.
+ * @param {array} expressValidationOpts - Express-validation options for validation req data.
  * @param {func} reqHandler - Callback 
  * @return {object} - Returns object of newly registered user.
  */
@@ -261,8 +261,8 @@ app.post('/api/users',
 /**
  * 
  * @method addMovie
- * @param {string} Endpoint- Endpoint to add movie to favoirtes.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to add movie to favoirtes.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback that locates use and adds specified movie to their favorites.
  * @returns {object} - Returns updated user object.
  */
@@ -284,8 +284,8 @@ app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: 
 /**
  * 
  * @method editUser
- * @param {string} Endpoint- Endpoint to edit user profile.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to edit user profile.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback that locates current user and updates their using data from req body.
  * @returns {object} - Returns updated user object.
  */
@@ -313,8 +313,8 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
 /**
  * 
  * @method deleteMovie
- * @param {string} Endpoint- Endpoint to remove movies form user favorites.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to remove movies form user favorites.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback that locates current user and removes specified movie from their favorites if found.
  * @returns {object} - Returns user object hat was deleted.
  */
@@ -336,8 +336,8 @@ app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {sessio
 /**
  * 
  * @method deleteUser
- * @param {string} Endpoint- Endpoint to remove user profile.
- * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {string} endpoint - Endpoint to remove user profile.
+ * @param {func} passportAuth - Passwort authentication method with method used for authentication and options.
  * @param {func} reqHandler - Callback that locates current user and deletes profile if found.
  */
 app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
