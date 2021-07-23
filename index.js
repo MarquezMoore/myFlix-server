@@ -15,15 +15,15 @@ const dotenv = require('dotenv').config();
 
 
 const express = require('express'),
- morgan = require('morgan'),
- bodyParser = require('body-parser'),
- uuid = require('uuid'),
- mongoose = require('mongoose'),
- models = require('./models.js'),
- passport = require('passport'),
- cors = require('cors'),
- { check, validationResult } = require('express-validator');
- 
+  morgan = require('morgan'),
+  bodyParser = require('body-parser'),
+  uuid = require('uuid'),
+  mongoose = require('mongoose'),
+  models = require('./models.js'),
+  passport = require('passport'),
+  cors = require('cors'),
+  { check, validationResult } = require('express-validator');
+
 require('./passport.js');
 
 
@@ -58,16 +58,20 @@ app.use(cors(
 
 let auth = require('./auth.js')(app);
 
-morgan.token('host', (req, res) =>{ // ??
+morgan.token('host', (req, res) =>{
   return req.hostname;
 })
 
-app.use((err, req, res, next)=>{// ??
+app.use((err, req, res, next)=>{
   console.error(err.stack);
   res.status(500).send('Something Broke');
-  
 })
 
+/**
+ * 
+ * @param {object} req - Request object from client trying to register account
+ * @returns {object} New user record formed from the request body.
+ */
 function userDetails(req) {
   let user = {
     username: req.body.username,
@@ -80,18 +84,27 @@ function userDetails(req) {
 }
 
 /*
-  Routes
+  * Routes
 */
 
-// GET Requests
+// GET Endpoints
+
+
 app.get('/', (req, res) => {
   res.status(200).send('Welcome');
 })
 
 /*
-  - passport.authenticate(): a passport method that is used to define which passport authentication strategy will be used to authenticate the respective endpoint
+  passport.authenticate(): a passport method that is used to define which passport authentication strategy will be used to authenticate the respective endpoint.
 */
 
+/**
+ * 
+ * @param {string} Endpoint- Endpoint to fetch all movies.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback queries database for all movies.
+ * @returns {object} - Returns object of all movies in database.
+ */
 app.get('/api/movies',  passport.authenticate('jwt', {session: false}) ,(req, res ) =>{
   movies.find()
     .then( movies => {
@@ -103,6 +116,14 @@ app.get('/api/movies',  passport.authenticate('jwt', {session: false}) ,(req, re
     })
 })
 
+/**
+ * 
+ * @method getMovieDetails
+ * @param {string} Endpoint- Endpoint to fetch movie details.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback to query database for the requested movie.
+ * @returns {object} - Returns object of requested movie.
+ */
 app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (req, res) =>{
   let title = req.params.title;
 
@@ -117,6 +138,14 @@ app.get('/api/movies/:title', passport.authenticate('jwt', {session: false}), (r
   
 })
 
+/**
+ * 
+ * @method getGenreDetails
+ * @param {string} Endpoint- Endpoint to fetch genre description.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback to query database for genre description.
+ * @returns {object} - Returns object of the genre description of the specified movie.
+ */
 app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (req, res) =>{
   let genre = req.params.genre;
 
@@ -130,7 +159,14 @@ app.get('/api/genre/:genre', passport.authenticate('jwt', {session: false}), (re
     })
 }) 
 
-
+/**
+ * 
+ * @method getDirectorDetails
+ * @param {string} Endpoint- Endpoint to fetch details director.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback that queries database for director details.
+ * @returns {object} - Returns object of director details.
+ */
 app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: false}), (req, res) =>{
   let title = req.params.title;
 
@@ -138,7 +174,6 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
     .then( movie => {
       if(!movie) return res.status(400).send({'msg': 'Cannot find movie with this title...'})
       res.status(200).json(movie.director);
-      
     })
     .catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
@@ -146,6 +181,14 @@ app.get('/api/movies/:title/director', passport.authenticate('jwt', {session: fa
 
 })
 
+/**
+ * 
+ * @method getUser
+ * @param {string} Endpoint- Endpoint to fetch user details.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback that locates specified user and returns that user's details.
+ * @returns {object} - Returns object of requested user.
+ */
 app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) => {
   let username = req.params.username
 
@@ -159,8 +202,16 @@ app.get('/api/users/:username', passport.authenticate('jwt', {session: false}), 
   })
 })
 
-// POST Requests
-// Endpoint for registrering users
+// POST Endpoints
+
+/**
+ * 
+ * @method registerUser
+ * @param {string} Endpoint- Endpoint to register new user.
+ * @param {array} Validation - Express-validation options for validation req data.
+ * @param {func} reqHandler - Callback 
+ * @return {object} - Returns object of newly registered user.
+ */
 app.post('/api/users', 
   [
     check('username', 'Username is must have 5 or more characters...').isLength({min: 5}),
@@ -173,8 +224,6 @@ app.post('/api/users',
 
   let errors = validationResult(req),  
     hashedPwd = users.hashPassword(req.body.password);
-
-    // console.log(errors.array());
 
   if( !errors.isEmpty() ) return res.status(422).json(  errors.array() )
 
@@ -207,8 +256,16 @@ app.post('/api/users',
 })
 
 
-// PUT Request
-// Add movie to user's favorites
+// PUT Endpoints
+
+/**
+ * 
+ * @method addMovie
+ * @param {string} Endpoint- Endpoint to add movie to favoirtes.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback that locates use and adds specified movie to their favorites.
+ * @returns {object} - Returns updated user object.
+ */
 app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: false}), ( req, res ) =>{ 
   users.findOneAndUpdate(
     { username: req.params.username },
@@ -224,6 +281,14 @@ app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: 
     })
 });
 
+/**
+ * 
+ * @method editUser
+ * @param {string} Endpoint- Endpoint to edit user profile.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback that locates current user and updates their using data from req body.
+ * @returns {object} - Returns updated user object.
+ */
 app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndUpdate(
     {username: req.params.username},
@@ -243,7 +308,16 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
     })
 }) 
 
-// DELETE Request
+// DELETE Endpoints
+
+/**
+ * 
+ * @method deleteMovie
+ * @param {string} Endpoint- Endpoint to remove movies form user favorites.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback that locates current user and removes specified movie from their favorites if found.
+ * @returns {object} - Returns user object hat was deleted.
+ */
 app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndUpdate(
     { username: req.params.username },
@@ -259,11 +333,17 @@ app.delete('/api/users/:username/:movieID', passport.authenticate('jwt', {sessio
     })
 }) 
 
+/**
+ * 
+ * @method deleteUser
+ * @param {string} Endpoint- Endpoint to remove user profile.
+ * @param {func} Authentication - Passwort authentication method with method used for authentication and options.
+ * @param {func} reqHandler - Callback that locates current user and deletes profile if found.
+ */
 app.delete('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
   users.findOneAndRemove({username: req.params.username})
     .then( user => {
       if( !user ) return res.status(400).send({'message': 'User not found...'})
-    
       res.status(200).send(`${ req.params.username } was successfully deleted!`)
     }).catch( err => {
       res.status(500).send(`Error: ${ err.stack }`)
