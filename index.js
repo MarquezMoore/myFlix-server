@@ -290,16 +290,27 @@ app.put('/api/users/:username/:movieID', passport.authenticate('jwt', {session: 
  * @returns {object} - Returns updated user object.
  */
 app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), (req, res) =>{
+  const params = {
+    username: req.body.username,
+    email: req.body.email,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    birthday: req.body.birthday,
+  }
+
+  // Loops through properties in params object and deletes properties with falsey values
+  for(let prop in params) {
+    if (!params[prop]){
+      delete params[prop]
+    }
+  }
+
   users.findOneAndUpdate(
     {username: req.params.username},
     {$set: {
-      username: req.body.username,
-      email: req.body.email,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      birthday: req.body.birthday,
+      params
     }}, 
-    {new: true})
+    {new: true, runValidators: true})
     .then( user => {
       if( !user ) return res.status(400).send({'message': 'Could not find user...'})
       res.status(200).json(userDetails(req))
