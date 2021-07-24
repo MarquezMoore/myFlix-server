@@ -298,6 +298,8 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
     birthday: req.body.birthday,
   }
 
+  console.log(req.body)
+
   // Loops through properties in params object and deletes properties with falsey values
   for(let prop in params) {
     if (!params[prop]){
