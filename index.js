@@ -307,9 +307,9 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
 
   users.findOneAndUpdate(
     {username: req.params.username},
-    {$set: {
+    {$set: 
       params
-    }}, 
+    }, 
     {new: true})
     .then( user => {
       if( !user ) return res.status(400).send({'message': 'Could not find user...'})
