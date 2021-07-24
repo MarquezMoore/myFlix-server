@@ -14,6 +14,7 @@ The objective of this project was to build a server-side component, API, of a â€
 - Express
 - MongoDB
 - Mongoose
+- jsdoc 
 
 ## Features
 - Returns a list of ALL movies to the user
@@ -36,4 +37,5 @@ reading data from requests and morgan for logging.
 - The business logic is modeled with Mongoose.
 - The API was tested via Postman.
 - The API uses passport JWT based for authorization and authentication and the express validator for input validation.
+- Document with jsdoc
 - The API is deployed to Heroku.
