@@ -310,7 +310,7 @@ app.put('/api/users/:username', passport.authenticate('jwt', {session: false}), 
     {$set: {
       params
     }}, 
-    {new: true, runValidators: true})
+    {new: true})
     .then( user => {
       if( !user ) return res.status(400).send({'message': 'Could not find user...'})
       res.status(200).json(userDetails(req))
